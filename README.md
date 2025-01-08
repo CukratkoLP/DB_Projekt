@@ -29,3 +29,5 @@ ERD (Entitno - relačný diagram) znázorňuje štruktúru databázy MovieLens a
 <p align="center">
 Obrázok 1. Entitno-relačná schéma MovieLens
 </p>
+
+## 2. Tvorba dimenzionálneho modelu
