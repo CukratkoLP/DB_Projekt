@@ -1,4 +1,4 @@
-# Téma projektu
+# ETL Proces datasetu Movielens
 
 ## 1. Úvod a popis zdrojových dát
 
