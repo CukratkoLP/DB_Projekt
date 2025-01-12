@@ -1,0 +1,157 @@
+CREATE DATABASE IF NOT EXISTS MONKEY_ETL_DB;
+USE DATABASE MONKEY_ETL_DB;
+
+CREATE OR REPLACE STAGE my_stage;
+LIST @my_stage;
+
+CREATE OR REPLACE TABLE users_staging (
+    id INT,
+    age INT,
+    gender STRING,
+    occupation_id INT,
+    zip_code STRING
+);
+
+CREATE OR REPLACE TABLE genres_staging (
+    id INT,
+    name STRING
+);
+
+CREATE OR REPLACE TABLE movies_genres_staging (
+    id INT,
+    movie_id INT,
+    genre_id INT
+);
+
+CREATE OR REPLACE TABLE age_group_staging (
+    id INT,
+    name STRING
+);
+
+CREATE OR REPLACE TABLE movies_staging (
+    id INT,
+    title STRING,
+    release_year INT
+);
+
+CREATE OR REPLACE TABLE ratings_staging (
+    id INT,
+    user_id INT,
+    movie_id INT,
+    rating INT,
+    rated_at TIMESTAMP
+);
+
+CREATE OR REPLACE TABLE occupations_staging (
+    id INT,
+    name STRING
+);
+
+CREATE OR REPLACE TABLE tags_staging (
+    id INT,
+    user_id INT,
+    movie_id INT,
+    tags STRING,
+    created_at TIMESTAMP
+);
+
+COPY INTO occupations_staging
+FROM @my_stage/occupations.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
+
+COPY INTO movies_genres_staging
+FROM @my_stage/genres_movies.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
+
+COPY INTO users_staging
+FROM @my_stage/users.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
+
+COPY INTO movies_staging
+FROM @my_stage/movies.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
+
+COPY INTO tags_staging
+FROM @my_stage/tags.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
+
+COPY INTO ratings_staging
+FROM @my_stage/ratings.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
+
+COPY INTO genres_staging
+FROM @my_stage/genres.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
+
+COPY INTO age_group_staging
+FROM @my_stage/age_group.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
+
+CREATE OR REPLACE TABLE Dim_movies AS
+SELECT DISTINCT
+    m.id AS idDim_movies,
+    m.title,
+    m.release_year,
+    LISTAGG(g.name, ', ') WITHIN GROUP (ORDER BY g.name) AS genres
+FROM movies_staging m
+LEFT JOIN movies_genres_staging mg ON m.id = mg.movie_id
+LEFT JOIN genres_staging g ON mg.genre_id = g.id
+GROUP BY m.id, m.title, m.release_year;
+
+CREATE OR REPLACE TABLE Dim_users AS
+SELECT DISTINCT
+    u.id AS idDim_users,
+    u.age,
+    CASE 
+        WHEN u.age BETWEEN 0 AND 18 THEN '0-18'
+        WHEN u.age BETWEEN 19 AND 35 THEN '19-35'
+        WHEN u.age BETWEEN 36 AND 50 THEN '36-50'
+        ELSE '51+'
+    END AS age_group,
+    u.gender,
+    o.name AS occupation,
+    u.zip_code
+FROM users_staging u
+LEFT JOIN occupations_staging o ON u.occupation_id = o.id;
+
+CREATE OR REPLACE TABLE Dim_tags AS
+SELECT DISTINCT
+    t.id AS idDim_tags,
+    t.tags,
+    t.created_at AS creation
+FROM tags_staging t;
+
+CREATE OR REPLACE TABLE Dim_timestamp AS
+SELECT DISTINCT
+    EXTRACT(EPOCH_SECOND FROM r.rated_at) AS idDim_time,
+    EXTRACT(SECOND FROM r.rated_at) AS second,
+    EXTRACT(MINUTE FROM r.rated_at) AS minute,
+    EXTRACT(HOUR FROM r.rated_at) AS hour,
+    EXTRACT(DAY FROM r.rated_at) AS day,
+    EXTRACT(WEEK FROM r.rated_at) AS week,
+    EXTRACT(MONTH FROM r.rated_at) AS month
+FROM ratings_staging r;
+
+CREATE OR REPLACE TABLE Fact_ratings AS
+SELECT 
+    r.id AS Fact_ratingscol,
+    r.rating,
+    AVG(r.rating) OVER (PARTITION BY r.movie_id) AS average_rating,
+    COUNT(r.rating) OVER (PARTITION BY r.movie_id) AS rating_count,
+    t.id AS idDim_tags,
+    u.id AS idDim_users,
+    m.id AS idDim_movies,
+    EXTRACT(EPOCH_SECOND FROM r.rated_at) AS idDim_time
+FROM ratings_staging r
+LEFT JOIN movies_staging m ON r.movie_id = m.id
+LEFT JOIN users_staging u ON r.user_id = u.id
+LEFT JOIN tags_staging t ON r.movie_id = t.movie_id AND r.user_id = t.user_id;
+
+DROP TABLE IF EXISTS ratings_staging;
+DROP TABLE IF EXISTS occupations_staging;
+DROP TABLE IF EXISTS tags_staging;
+DROP TABLE IF EXISTS movies_genres_staging;
+DROP TABLE IF EXISTS users_staging;
+DROP TABLE IF EXISTS age_group_staging;
+DROP TABLE IF EXISTS movies_genres_staging;
+DROP TABLE IF EXISTS movies_staging;
