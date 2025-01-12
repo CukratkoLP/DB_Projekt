@@ -24,10 +24,48 @@ Databáza MovieLens obsahuje tabuľky, ktoré uchovávajú údaje o používate�
 + **age_group**: Doplňujúca tabuľka o vekovej skupine používateľa
 ## 1.2 ERD Diagram
 ERD (Entitno - relačný diagram) znázorňuje štruktúru databázy MovieLens a vzťahy medzi jednotlivými tabuľkami na nasledujúcom obrázku:
-
-![MovieLens_ERD](https://github.com/user-attachments/assets/d8630a63-06b5-401e-8e10-6bcbc1862369)
-<p align="center">
+<div align="center"> 
+<img src="https://github.com/user-attachments/assets/d8630a63-06b5-401e-8e10-6bcbc1862369" alt="MovieLens_ERD"> 
+<p>
 Obrázok 1. Entitno-relačná schéma MovieLens
 </p>
+</div>
 
 ## 2. Tvorba dimenzionálneho modelu
+Navrhnutý dimenzionálny model poskytuje základ pre analýzu údajov o hodnotení filmov. Faktová tabuľka obsahuje kľúčové metriky a odkazuje na rôzne dimenzie. Pomocou tohto modelu je možné odpovedať na širokú škálu otázok týkajúcich sa preferencií používateľov a popularity filmov
+## Faktová tabuľka:  ` Fact_ratings `
+### Hlavné metriky:
+
++ **rating:** Číselné hodnotenie, ktoré používateľ udelil filmu. Táto metrika je kľúčová pre analýzu preferencií používateľov a popularity filmov.
++ **average_rating:** Priemerné hodnotenie filmu všetkými používateľmi. Táto metrika umožňuje porovnať popularitu rôznych filmov.
++ **rating_count:** Počet hodnotení, ktoré film získal. Táto metrika poskytuje informáciu o tom, ako často bol film hodnotený.
+
+### Kľúče v tabuľke `Fact_ratings:`
+
++ **idDim_time:** Odkaz na konkrétny časový úsek, kedy bolo hodnotenie udelené.
+  
++ **idDim_date:** Odkaz na konkrétny dátum, kedy bolo hodnotenie udelené.
+  
++ **idDim_tags:** Odkaz na tagy alebo kľúčové slová spojené s hodnotením.
+  
++ **idDim_users:** Odkaz na konkrétneho používateľa, ktorý hodnotenie udeli.
+  
++ **idDim_movies:** Odkaz na konkrétny film, ktorý bol hodnotený.
+### Dimenzné tabuľky:
+
+`Dim_timestamp:` Časové údaje (sekundy až mesiace) pre analýzu zmien hodnotení v čase. **SCD typ 1.**
+
+`Dim_users:` Demografické údaje o používateľoch (vek, pohlavie, atď.) pre analýzu preferencií. **SCD typ 2.**
+
+`Dim_tags:` Tagy filmov pre analýzu popularity tém. **SCD typ 2.**
+
+`Dim_movies:` Informácie o filmoch (názov, rok, žánre) pre analýzu výkonnosti. **SCD typ 2.**
+<div align="center"> 
+  <img src="https://github.com/user-attachments/assets/3a785924-6d06-4704-8835-9d2d76e0deb4" alt="MovieLens_ERD"> 
+  <p>
+    Obrázok 2. Schéma hviezdy pre Movielens
+  </p> 
+</div>
+
+
+
