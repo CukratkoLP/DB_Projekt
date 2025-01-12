@@ -51,15 +51,15 @@ Navrhnutý dimenzionálny model poskytuje základ pre analýzu údajov o hodnote
 + **idDim_users:** Odkaz na konkrétneho používateľa, ktorý hodnotenie udeli.
   
 + **idDim_movies:** Odkaz na konkrétny film, ktorý bol hodnotený.
-### Dimenzné tabuľky:
+### Dimenzionálne tabuľky:
 
-`Dim_timestamp:` Časové údaje (sekundy až mesiace) pre analýzu zmien hodnotení v čase. **SCD typ 1.**
+**`Dim_timestamp:`** Časové údaje (sekundy až mesiace) pre analýzu zmien hodnotení v čase. **SCD typ 1.**
 
-`Dim_users:` Demografické údaje o používateľoch (vek, pohlavie, atď.) pre analýzu preferencií. **SCD typ 2.**
+**`Dim_users:`** Demografické údaje o používateľoch (vek, pohlavie, atď.) pre analýzu preferencií. **SCD typ 2.**
 
-`Dim_tags:` Tagy filmov pre analýzu popularity tém. **SCD typ 2.**
+**`Dim_tags:`** Tagy filmov pre analýzu popularity tém. **SCD typ 2.**
 
-`Dim_movies:` Informácie o filmoch (názov, rok, žánre) pre analýzu výkonnosti. **SCD typ 2.**
+**`Dim_movies:`** Informácie o filmoch (názov, rok, žánre) pre analýzu výkonnosti. **SCD typ 2.**
 <div align="center"> 
   <img src="https://github.com/user-attachments/assets/3a785924-6d06-4704-8835-9d2d76e0deb4" alt="MovieLens_ERD"> 
   <p>
