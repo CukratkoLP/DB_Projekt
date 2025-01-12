@@ -252,7 +252,7 @@ ORDER BY 
     avg_rating ASC
 LIMIT 10;
 ```
-Popis: Tento dotaz vyberie 10 filmov s najnižším priemerným hodnotením. Spojí tabuľku hodnotení (Fact_ratings) s tabuľkou filmov (Dim_movies), vypočíta priemerné hodnotenie pre každý film a potom zoradí výsledky vzostupne podľa priemerného hodnotenia a vyberie len prvých 10 riadkov.
+Tento dotaz vyberie 10 filmov s najnižším priemerným hodnotením. Spojí tabuľku hodnotení (Fact_ratings) s tabuľkou filmov (Dim_movies), vypočíta priemerné hodnotenie pre každý film a potom zoradí výsledky vzostupne podľa priemerného hodnotenia a vyberie len prvých 10 riadkov.
 <div align="center"> 
   <img src="https://github.com/user-attachments/assets/1076ed4b-2863-42bc-9a1e-0f43aee709d6" alt="MovieLens_ERD"> 
   <p>
