@@ -67,5 +67,39 @@ Navrhnutý dimenzionálny model poskytuje základ pre analýzu údajov o hodnote
   </p> 
 </div>
 
+## 3. ETL Proces v snowflake
+ETL je skratka pre Extract, Transform, Load (extrahovať, transformovať, načítať). Je to proces, ktorý sa používa na presun dát z rôznych zdrojov (napr. databázy, súbory CSV) do jedného centrálneho úložiska, ako je Snowflake, kde môžu byť tieto dáta analyzované.
+
+### Extract (Extrahovanie dát)
+
+CSV súbory boli nahraté do Snowflake prostredníctvom interného stage úložiska, ktoré sa nazýva my_stage.
+```sql
+CREATE OR REPLACE STAGE my_stage;
+```
+
+Príkaz na vytvorenie my_stage úložiska slúži na dočasné uloženie súborov, ako napríklad CSV súbory, pred ich následným spracovaním.
+```sql
+COPY INTO occupations_staging
+FROM @my_stage/occupations.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
+```
+
+Transformácia je proces, počas ktorého sa surové dáta očistia, upravia a premenia na štruktúrovaný formát vhodný pre analýzu. V mojom prípade dáta zo staging tabuliek na dimenzie a faktovú tabuľku.
+
++ `Dim_movies`
+  Táto tabuľka ukladá informácie o filmoch v dátovom sklade.
++ `Dim_users`
+  Táto tabuľka ukladá informácie o používateľoch, ktorí hodnotili filmy.
++ `Dim_tags`
+  Táto tabuľka ukladá informácie o značkách, ktoré používatelia priradili filmom.
++ `Dim_timestamp`
+  Táto tabuľka ukladá časové pečiatky extrahované z údajov o hodnoteniach v samostatnej tabuľke pre dimenzionálne modelovanie.
++ `Fact_ratings`
+  Táto tabuľka ukladá faktické údaje o hodnoteniach filmov.
+
+
+
+
+
 
 
