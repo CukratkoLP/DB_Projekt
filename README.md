@@ -178,6 +178,7 @@ DROP TABLE IF EXISTS movies_staging;
 ```
 
 ## 4. Vizualizácia dát
+
 1. Top 10 najvyššie hodnotených filmov:
 ```SQL
 SELECT 
@@ -194,6 +195,7 @@ ORDER BY 
 LIMIT 10;
 ```
 Tento dotaz vyberie 10 filmov s najvyšším priemerným hodnotením. Spojí tabuľku hodnotení (Fact_ratings) s tabuľkou filmov (Dim_movies), vypočíta priemerné hodnotenie pre každý film a potom zoradí výsledky zostupne podľa priemerného hodnotenia a vyberie len prvých 10 riadkov.
+
 2. Priemerné hodnotenie podľa vekovej skupiny:
 ```SQL
 SELECT 
@@ -209,6 +211,7 @@ ORDER BY 
     avg_rating DESC;
 ```
 Tento dotaz vypočíta priemerné hodnotenie pre každú vekovú skupinu používateľov. Spojí tabuľku hodnotení (Fact_ratings) s tabuľkou používateľov (Dim_users), vypočíta priemerné hodnotenie pre každú vekovú skupinu a potom zoradí výsledky zostupne podľa priemerného hodnotenia.
+
 3. Top 10 najčastejšie hodnotených filmov:
 ```SQL
 SELECT 
@@ -225,6 +228,7 @@ ORDER BY 
 LIMIT 10;
 ```
 Tento dotaz vyberie 10 filmov s najväčším počtom hodnotení. Spojí tabuľku hodnotení (Fact_ratings) s tabuľkou filmov (Dim_movies), spočíta počet hodnotení pre každý film a potom zoradí výsledky zostupne podľa počtu hodnotení a vyberie len prvých 10 riadkov.
+
 4. Rozdelenie hodnotení:
 ```SQL
 SELECT rating, COUNT(*) AS pocet_hodnoteni
@@ -232,6 +236,7 @@ FROM Fact_ratings
 GROUP BY rating;
 ```
 Tento dotaz vypočíta počet hodnotení pre každú možnú hodnotu (1-5). Zoskupí záznamy podľa hodnotenia a spočíta počet záznamov pre každú hodnotu.
+
 5. Top 10 najhoršie hodnotených filmov:
 ```SQL
 SELECT 
